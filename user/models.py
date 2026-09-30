@@ -1,6 +1,5 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils import timezone
 
@@ -36,14 +35,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(
-        "username",
-        max_length=150,
-        unique=True,
-        blank=True,
-        null=True,
-        validators=[UnicodeUsernameValidator()],
-    )
     email = models.EmailField("email address", unique=True)
     first_name = models.CharField("first name", max_length=150, blank=True)
     last_name = models.CharField("last name", max_length=150, blank=True)
@@ -68,10 +59,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return self.email or self.username or "User"
+        return self.email
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
 
     def get_short_name(self):
-        return self.first_name or self.email or self.username
+        return self.first_name or self.email
